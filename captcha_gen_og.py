@@ -6,35 +6,6 @@ FONTPATH = ["./data/font/times-bold.ttf"]
 ENGSTR = "ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz" # 沒有 1 i I q Q O o
 LETTERSTR = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz"
 
-
-class rect:
-    def __init__(self):
-        self.location = (randint(1, 100), randint(1, 30))
-        # self.luoverlay = True if randint(1, 10) > 6 else False
-        # self.rdoverlay = False if self.luoverlay else True if randint(1, 10) > 8 else False
-        self.rdoverlay = False
-        self.luoverlay = False
-        self.lucolor = 0 if randint(0, 1) else 255
-        self.rdcolor = 0 if self.lucolor == 255 else 255
-        self.ludrawn = False
-        self.rddrawn = False
-        self.pattern = randint(0, 1)
-        self.angle = randint(-55, 55) # 角度
-
-
-    def draw(self, image, overlay):
-        if((overlay or not self.luoverlay) and not self.ludrawn):
-            self.ludrawn = True
-            stp = self.location
-            transparent = int(255 * 0.45 if self.lucolor == 0 else 255 * 0.8)
-            color = (self.lucolor, self.lucolor, self.lucolor, transparent)
-        if((overlay or not self.rdoverlay) and not self.rddrawn):
-            self.rddrawn = True
-            dstp = (self.location[0], self.location[1] + self.size[1])
-            rstp = (self.location[0] + self.size[0], self.location[1])
-            transparent = int(255 * 0.45 if self.rdcolor == 0 else 255 * 0.8)
-            color = (self.rdcolor, self.rdcolor, self.rdcolor, transparent)
-
 # 字符
 class captchatext:
     def __init__(self, priority, offset, captchalen, engletter, ENGNOLIMIT):
@@ -47,7 +18,6 @@ class captchatext:
             self.letter = str(randint(2, 9))
 
         self.color = [0, 0, 0] # 文字顏色
-        self.angle = randint(-55, 55) # 文字角度
         self.priority = priority
         self.offset = offset
         self.next_offset = 0
@@ -64,16 +34,20 @@ class captchatext:
         textdraw.text((0, 0), letter, font=font, fill=color)
         text = text.rotate(angle, expand=True)
         text = text.resize((int(text.size[0] / 10), int(text.size[1] / 10)))
-        base = int(self.priority * (80 / self.captchalen))
+        base = int(self.priority * (140 / self.captchalen))
         rand_min = (self.offset - base - 4) if (self.offset - base - 4) >= -15 else -15
         rand_min = 0 if self.priority == 0 else rand_min
+        # rand_min = randint(-50, -15)
         avg_dp = int(157 / self.captchalen)
-        rand_max = (avg_dp - text.size[0]) if self.priority == self.captchalen - 1 else (avg_dp - text.size[0] + 10)
+        rand_max = (avg_dp - text.size[0]) if self.priority == self.captchalen - 1 else (avg_dp - text.size[0] + 20)
         try:
             displace = randint(rand_min, rand_max)
         except:
             displace = rand_max
-        location = (base + displace, randint(3, 8))
+
+        displace = randint(-125, -25)
+        print(displace)
+        location = (base + displace, randint(3, 10))
         self.next_offset = location[0] + text.size[0]
         image.paste(text, location, text)
 
@@ -95,8 +69,7 @@ def generate(GENNUM, SAVEPATH, ENGP=25, FIVEP=0, ENGNOLIMIT=False, filename="tra
 
         # captcha.show()
 
-
-        angle = randint(-15, 15)
+        angle = [randint(-15, -5), randint(5, 15)]
 
         for i in range(captchalen):
             newtext = captchatext(i, offset, captchalen, (True if engat == i else False), ENGNOLIMIT)
@@ -104,7 +77,7 @@ def generate(GENNUM, SAVEPATH, ENGP=25, FIVEP=0, ENGNOLIMIT=False, filename="tra
             captchastr += str(newtext.letter)
         
         
-        newtext.draw(image=captcha, letter=captchastr, angle=angle)
+        newtext.draw(image=captcha, letter=captchastr, angle=angle[randint(0, 1)])
         letterlist.append([str(index).zfill(len(str(GENNUM))), captchastr])
         lenlist.append([str(index).zfill(len(str(GENNUM))), captchalen])
 
