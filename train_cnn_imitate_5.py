@@ -4,6 +4,7 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping, TensorBoard
 from PIL import Image
 import numpy as np
 import csv
+import matplotlib.pyplot as plt
 
 LETTERSTR = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz"
 
@@ -76,8 +77,20 @@ vali_label = [arr for arr in np.asarray(vali_label)]
 print("Shape of validation data:", vali_data.shape)
 
 filepath="./data/model/imitate_5_model.h5"
-checkpoint = ModelCheckpoint(filepath, monitor='val_digit5_acc', verbose=1, save_best_only=True, mode='max')
-earlystop = EarlyStopping(monitor='val_digit5_acc', patience=5, verbose=1, mode='auto')
+checkpoint = ModelCheckpoint(filepath, save_best_only=True)
+earlystop = EarlyStopping(patience=5, verbose=1, mode='auto')
 tensorBoard = TensorBoard(log_dir = "./logs", histogram_freq = 1)
 callbacks_list = [checkpoint, earlystop, tensorBoard]
-model.fit(train_data, train_label, batch_size=400, epochs=100, verbose=2, validation_data=(vali_data, vali_label), callbacks=callbacks_list)
+model.fit(
+    train_data, 
+    train_label, 
+    batch_size=400, 
+    epochs=100, 
+    verbose=2, 
+    validation_data=(vali_data, vali_label), 
+    callbacks=callbacks_list
+)
+
+# for t in range(1, 5):
+#     plt.subplot(2, 2, t)
+#     PlotTrainHistory(his, 'c%s_acc' %t, 'val_c%s_acc' %t)

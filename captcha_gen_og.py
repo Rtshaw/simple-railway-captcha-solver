@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*- 
 from PIL import Image, ImageDraw, ImageFont
 from random import randint
 import csv
 import numpy as np
-FONTPATH = ["./data/font/times-bold.ttf"]
+FONTPATH = ["./data/font/PMingLiU-TW.ttf"]
 ENGSTR = "ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz" # 沒有 1 i I q Q O o
 LETTERSTR = "23456789ABCDEFGHJKLMNPRSTUVWXYZabcdefghjklmnprstuvwxyz"
 
